@@ -2,13 +2,35 @@
 
 [Live app](https://little-lens-visual-skills.shikha.chatgpt.site/) · [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-A free visual skills workspace for individuals and families. Profiles accept any nonnegative whole-number age. Activities were originally designed for ages 8–12 and are not age-normed or clinically validated for any age. Adults can work independently; children should have adult help. It includes local family profiles, descriptive symptom check-ins, the original six-round visual search / memory / spatial matching tasks, five expanded activities, adjustable practice, printable worksheets, longitudinal task results, and JSON backup/import.
+Little Lens is a free app for exploring and practising visual skills at home. It provides assessments and exercises that overlap in subject matter with some activities you might encounter with a developmental optometrist or vision therapist: finding visual details, remembering patterns, understanding spatial relationships, and following a moving target. You can try activities, see your measurements, and keep a record of your experience over time.
+
+The similarity is in the skills being explored. Little Lens does not reproduce a clinical eye examination or a prescribed vision therapy programme, and its results cannot diagnose a condition or establish that treatment is working.
+
+## What can I do with it?
+
+- **Explore visual skills:** try visual search, memory, matching, mental rotation, and other on-screen tasks.
+- **Practise at your own pace:** choose a difficulty, take breaks, or use printable worksheets away from the screen.
+- **Try optional webcam observations:** follow targets and explore gaze patterns, with camera-accuracy checks to explain when measurements are usable.
+- **Record everyday experiences:** note symptoms and difficulties alongside activity results.
+- **Review your progress:** revisit results, repeat compatible assessments, and print a report to discuss with an eye-care professional.
+
+## Who is it for?
+
+Individuals and families can use Little Lens without creating an account. Adults can use it independently; children should have adult help. Profiles accept any whole-number age, although the original activities were designed with ages 8–12 in mind. There are no age-based norms or clinically validated scores for any age.
+
+## Getting started
+
+1. [Open Little Lens](https://little-lens-visual-skills.shikha.chatgpt.site/) and create a profile using a nickname.
+2. Choose an assessment or practice activity and follow its instructions. A laptop or tablet is best for assessments; webcam activities need a camera and permission to use it.
+3. Review your results and save a backup if you want to keep a separate copy or move to another device.
+
+Your profiles and results stay in your browser on your device. Webcam processing happens on your device too. There is no registration, advertising, or app analytics. Clearing browser data can erase your history, so use the backup option for records you want to keep.
 
 ## Clinical boundary
 
 These original tasks and questions are not clinically validated. Results describe task performance, not diagnoses, age norms, or treatment outcomes. Practice has no established clinical remediation benefit. The Evidence view cites NEI, CITT, AAPOS, and NHS sources and distinguishes clinical treatment research from these activities. Content was reviewed against those sources on September 13, 2026; this is not an independent clinical validation.
 
-## Run
+## For developers: run locally
 
 Use Node 22.18+ (native TypeScript stripping is used for tests).
 
