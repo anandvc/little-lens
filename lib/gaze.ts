@@ -1,0 +1,19 @@
+export type Point={x:number;y:number};
+export type Sample={feature:number[];target:Point};
+export const calibrationTargets:Point[]=[{x:.15,y:.15},{x:.5,y:.15},{x:.85,y:.15},{x:.15,y:.5},{x:.5,y:.5},{x:.85,y:.5},{x:.15,y:.85},{x:.5,y:.85},{x:.85,y:.85}];
+export const validationTargets:Point[]=[{x:.3,y:.3},{x:.7,y:.3},{x:.5,y:.5},{x:.3,y:.7},{x:.7,y:.7}];
+// Coordinates are fractions of the target surface, not degrees of visual angle.
+export function features(p:Point[]):number[]|null{if(p.length<478)return null;const w=Math.hypot(p[33].x-p[263].x,p[33].y-p[263].y);if(w<.08)return null;const eyes=[[468,33,133,159,145],[473,362,263,386,374]];const f:number[]=[];for(const [iris,a,b,top,bottom] of eyes){const dx=p[b].x-p[a].x,dy=p[b].y-p[a].y,d=dx*dx+dy*dy;if(d<.0001||Math.hypot(p[top].x-p[bottom].x,p[top].y-p[bottom].y)/Math.sqrt(d)<.10)return null;f.push(((p[iris].x-p[a].x)*dx+(p[iris].y-p[a].y)*dy)/d,((p[iris].y-p[a].y)*dx-(p[iris].x-p[a].x)*dy)/d);}
+ f.push(p[1].x,p[1].y,w,(p[263].y-p[33].y)/w);return f.every(Number.isFinite)?f:null;}
+export type GazeModel={mean:number[];scale:number[];x:number[];y:number[]};
+function solve(a:number[][],b:number[]){const m=a.map((row,i)=>[...row,b[i]]),n=b.length;for(let k=0;k<n;k++){let pivot=k;for(let j=k+1;j<n;j++)if(Math.abs(m[j][k])>Math.abs(m[pivot][k]))pivot=j;[m[k],m[pivot]]=[m[pivot],m[k]];if(Math.abs(m[k][k])<1e-10)throw Error('Calibration could not be fitted');const d=m[k][k];for(let j=k;j<=n;j++)m[k][j]/=d;for(let i=0;i<n;i++)if(i!==k){const f=m[i][k];for(let j=k;j<=n;j++)m[i][j]-=f*m[k][j];}}return m.map(r=>r[n]);}
+export function fitGaze(samples:Sample[]):GazeModel{if(samples.length<45)throw Error('Not enough calibration samples');const n=samples[0].feature.length,mean=Array.from({length:n},(_,i)=>samples.reduce((s,p)=>s+p.feature[i],0)/samples.length),scale=mean.map((m,i)=>Math.max(.001,Math.sqrt(samples.reduce((s,p)=>s+(p.feature[i]-m)**2,0)/samples.length)));const rows=samples.map(s=>[1,...s.feature.map((x,i)=>(x-mean[i])/scale[i])]);const matrix=Array.from({length:n+1},(_,i)=>Array.from({length:n+1},(_,j)=>rows.reduce((s,r)=>s+r[i]*r[j],0)+(i===j?.2:0)));const rhs=(axis:'x'|'y')=>rows[0].map((_,i)=>rows.reduce((sum,r,j)=>sum+r[i]*samples[j].target[axis],0));return {mean,scale,x:solve(matrix,rhs('x')),y:solve(matrix,rhs('y'))};}
+export function predictGaze(m:GazeModel,f:number[]):Point{const row=[1,...f.map((v,i)=>(v-m.mean[i])/m.scale[i])];return {x:row.reduce((s,v,i)=>s+v*m.x[i],0),y:row.reduce((s,v,i)=>s+v*m.y[i],0)};}
+export function distance(a:Point,b:Point){return Math.hypot(a.x-b.x,a.y-b.y);}
+export function cameraQuality(errors:number[],usable:number,total:number,fps:number){const mean=errors.length?errors.reduce((a,b)=>a+b,0)/errors.length:Infinity;return {mean,coverage:total?usable/total:0,usable:errors.length>=25&&mean<=.2&&total>0&&usable/total>=.75&&fps>=10};}
+export function cameraTarget(kind:string,t:number):{cue:Point;expected:Point}{let cue={x:.5,y:.5};if(kind==='pursuit')cue=t<12?{x:.5+.3*Math.sin(t*Math.PI/4),y:.5}:{x:.5,y:.5+.3*Math.sin((t-12)*Math.PI/4)};if(kind==='gazeShift'||kind==='antiSaccade')cue={x:Math.floor(t/3)%2?.8:.2,y:.5};return {cue,expected:kind==='antiSaccade'?{x:1-cue.x,y:cue.y}:cue};}
+
+// Protocol 4 timing is fixed across attempts; these are engineering timings, not clinical norms.
+export const cameraTiming={settleMs:1000,validationSampleMs:1800,taskSeconds:24,pursuitLeadInSeconds:1,pursuitSwitchSeconds:12} as const;
+export function stationarySampleAllowed(elapsedMs:number){return elapsedMs>=cameraTiming.settleMs&&elapsedMs<cameraTiming.settleMs+cameraTiming.validationSampleMs;}
+export function pursuitScored(t:number){return t>=cameraTiming.pursuitLeadInSeconds&&t<cameraTiming.taskSeconds&&!(t>=cameraTiming.pursuitSwitchSeconds&&t<cameraTiming.pursuitSwitchSeconds+cameraTiming.pursuitLeadInSeconds);}

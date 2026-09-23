@@ -1,0 +1,3 @@
+Vendored preprocessing from https://github.com/RedForestAI/WebEyeTrack at commit 75fbd2f5f784f2eb3a39675a8dcbf1b01c697f1c (MIT).
+mathUtils.js and safeSVD.js are TypeScript-transpiled upstream sources; import extension adjusted. Model assets in public/vision/blazegaze come from js/examples/demo-app/public/web at the same commit.
+Our adapter shares MediaPipe frames with the baseline, uses these eye-patch and metric-pose routines and the pretrained BlazeGaze CNN, and fits a local regularized mapping from its output to our target surface. It does not run the paper's neural-network fine-tuning, clickstream learning, output clipping, or Kalman filter. Results must be labelled as an adapted BlazeGaze pipeline, not a replication of paper accuracy.

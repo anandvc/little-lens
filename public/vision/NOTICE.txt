@@ -1,0 +1,13 @@
+MediaPipe Tasks Vision 0.10.32, Copyright Google LLC.
+Distributed under Apache License 2.0.
+Source: https://github.com/google-ai-edge/mediapipe
+Package: https://www.npmjs.com/package/@mediapipe/tasks-vision/v/0.10.32
+Model: https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
+Model documentation: https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker
+The face-landmark model is not an eye-disease diagnostic model.
+The gaze calibration and quality checks in Little Lens are original, experimental code.
+
+The optional protocol 6 comparison uses WebEyeTrack/BlazeGaze code and weights
+(MIT, see blazegaze/LICENSE and lib/vendor/webeyetrack/README.md in source),
+TensorFlow.js 4.22.0 (Apache 2.0), and ml-matrix 6.12.1 (MIT).
+See compare-worker.js.LEGAL.txt for bundled code notices and tf-wasm/ for WASM notices.

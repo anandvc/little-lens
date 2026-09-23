@@ -1,0 +1,4 @@
+TensorFlow.js WASM backend 4.22.0, Copyright Google LLC.
+Distributed under Apache License 2.0; see LICENSE.txt.
+Source: https://github.com/tensorflow/tfjs/tree/tfjs-v4.22.0/tfjs-backend-wasm
+These files are self-hosted and execute only on the user's device.
