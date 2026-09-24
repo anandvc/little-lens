@@ -144,7 +144,7 @@ function BasicCameraSession({initial,onSave,onClose,onCompare}:CameraProps & {on
    const media=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}},audio:false});
    if(!alive.current||token!==generation.current){media.getTracks().forEach(t=>t.stop());return;}
    stream.current=media;video.current!.srcObject=media;await video.current!.play();if(token!==generation.current)return;
-   const w=new Worker('/vision/worker.js');worker.current=w;state.current.lastFrame=performance.now();
+   const w=new Worker(new URL('vision/worker.js',document.baseURI));worker.current=w;state.current.lastFrame=performance.now();
    const send=async(now:number,metadata?:{captureTime?:number;presentationTime?:number})=>{
     if(!alive.current||token!==generation.current)return;const v=video.current!;
     if('requestVideoFrameCallback' in v)frameId.current=v.requestVideoFrameCallback(send);else frameId.current=requestAnimationFrame(send);

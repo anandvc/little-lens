@@ -1,6 +1,6 @@
 # Little Lens
 
-[Live app](https://little-lens-visual-skills.shikha.chatgpt.site/) · [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[Live app](https://anandvc.github.io/little-lens/) · [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 Little Lens is a free app for exploring and practising visual skills at home. It provides assessments and exercises that overlap in subject matter with some activities you might encounter with a developmental optometrist or vision therapist: finding visual details, remembering patterns, understanding spatial relationships, and following a moving target. You can try activities, see your measurements, and keep a record of your experience over time.
 
@@ -20,7 +20,7 @@ Individuals and families can use Little Lens without creating an account. Adults
 
 ## Getting started
 
-1. [Open Little Lens](https://little-lens-visual-skills.shikha.chatgpt.site/) and create a profile using a nickname.
+1. [Open Little Lens](https://anandvc.github.io/little-lens/) and create a profile using a nickname.
 2. Choose an assessment or practice activity and follow its instructions. A laptop or tablet is best for assessments; webcam activities need a camera and permission to use it.
 3. Review your results and save a backup if you want to keep a separate copy or move to another device.
 
@@ -54,7 +54,9 @@ Automated domain tests cover generation across all tasks and levels, unique corr
 
 ## Hosting and contributions
 
-This repository publishes the source, not a GitHub Pages deployment. The live app remains on ChatGPT Sites. The current build produces a Cloudflare-compatible Worker; GitHub Pages would need a static build and asset-path changes.
+The live app is hosted on GitHub Pages. Pushes to `main` run tests, type checks, and the static build before deploying through GitHub Actions.
+
+Use `npm run build:pages` to build `dist-pages`, and `npm run preview:pages` to preview it at `/little-lens/`. `PAGES_BASE_PATH` can override the path for other repositories or a custom domain. The original `npm run build` command remains available for the Sites/Cloudflare build.
 
 The public checkout's `.openai/hosting.json` has empty resource bindings and no live-site publishing identity. Local development needs no Sites account or API key. Camera access requires localhost or HTTPS; models and WASM are served locally from `public/vision`. Use JSON backup/import to move histories between website addresses.
 

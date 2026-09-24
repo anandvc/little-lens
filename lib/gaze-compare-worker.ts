@@ -10,11 +10,11 @@ self.onmessage=async(e:MessageEvent)=>{
  const m=e.data;
  try{
   if(m.type==='init'){
-   const path=new URL('/vision/vision_bundle.mjs',self.location.origin).href;
+   const path=new URL('./vision_bundle.mjs',self.location.href).href;
    const {FaceLandmarker,FilesetResolver}=await import(/* @vite-ignore */ path);
-   tracker=await FaceLandmarker.createFromOptions(await FilesetResolver.forVisionTasks('/vision/wasm'),{baseOptions:{modelAssetPath:'/vision/face_landmarker.task',delegate:'CPU'},runningMode:'VIDEO',numFaces:2,outputFacialTransformationMatrixes:true,minFaceDetectionConfidence:.7,minFacePresenceConfidence:.7,minTrackingConfidence:.7});
-   setWasmPaths('/vision/tf-wasm/');setThreadsCount(1);await tf.setBackend('wasm');await tf.ready();
-   model=await tf.loadLayersModel('/vision/blazegaze/model.json');
+   tracker=await FaceLandmarker.createFromOptions(await FilesetResolver.forVisionTasks(new URL('./wasm',self.location.href).href),{baseOptions:{modelAssetPath:new URL('./face_landmarker.task',self.location.href).href,delegate:'CPU'},runningMode:'VIDEO',numFaces:2,outputFacialTransformationMatrixes:true,minFaceDetectionConfidence:.7,minFacePresenceConfidence:.7,minTrackingConfidence:.7});
+   setWasmPaths(new URL('./tf-wasm/',self.location.href).href);setThreadsCount(1);await tf.setBackend('wasm');await tf.ready();
+   model=await tf.loadLayersModel(new URL('./blazegaze/model.json',self.location.href).href);
    // Exercise real weights once before accepting camera input.
    const warm=tf.tidy(()=>model.predict([tf.zeros([1,128,512,3]),tf.tensor2d([[0,0,1]]),tf.tensor2d([[0,0,60]])]) as tf.Tensor);
    const values=await warm.data();warm.dispose();if(!Array.from(values).every(Number.isFinite))throw Error('Model returned invalid values');

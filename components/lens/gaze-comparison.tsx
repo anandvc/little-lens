@@ -134,7 +134,7 @@ export function BlazeCameraSession({initial,onSave,onClose,onBasic}:{initial:Sui
   try{
    const media=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}},audio:false});if(!alive.current||token!==generation.current){media.getTracks().forEach(t=>t.stop());return;}
    stream.current=media;video.current!.srcObject=media;await video.current!.play();if(token!==generation.current)return;
-   const w=new Worker('/vision/compare-worker.js');worker.current=w;
+   const w=new Worker(new URL('vision/compare-worker.js',document.baseURI));worker.current=w;
    const send=async(now:number,metadata?:{captureTime?:number;presentationTime?:number})=>{
     if(token!==generation.current||!alive.current)return;const v=video.current!;
     frameId.current='requestVideoFrameCallback'in v?v.requestVideoFrameCallback(send):requestAnimationFrame(send);if(pending.current||v.readyState<2)return;pending.current=true;

@@ -15,7 +15,10 @@
     "test": "node --test tests/vision.test.ts",
     "build:gaze": "node scripts/build-gaze-worker.mjs",
     "prebuild": "npm run build:gaze",
-    "predev": "npm run build:gaze"
+    "predev": "npm run build:gaze",
+    "build:pages": "npm run build:gaze && vite build --config vite.pages.config.ts",
+    "dev:pages": "vite --config vite.pages.config.ts",
+    "preview:pages": "vite preview --config vite.pages.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
