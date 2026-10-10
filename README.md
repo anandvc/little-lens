@@ -11,7 +11,8 @@ The similarity is in the skills being explored. Little Lens does not reproduce a
 - **Explore visual skills:** try visual search, memory, matching, mental rotation, and other on-screen tasks.
 - **Practise at your own pace:** choose a difficulty, take breaks, or use printable worksheets away from the screen.
 - **Try optional webcam observations:** follow targets and explore gaze patterns, with camera-accuracy checks to explain when measurements are usable.
-- **Record everyday experiences:** note symptoms and difficulties alongside activity results.
+- **Record everyday experiences:** answer ten quick questions about eyes, reading, and close work, and note what you have noticed.
+- **Prepare for an eye examination:** see what to ask for (including checks of eye teaming and focusing up close, which school screenings and these activities cannot test) and print a one-page appointment sheet.
 - **Review your progress:** revisit results, repeat compatible assessments, and print a report to discuss with an eye-care professional.
 
 ## Who is it for?
@@ -21,8 +22,8 @@ Individuals and families can use Little Lens without creating an account. Adults
 ## Getting started
 
 1. [Open Little Lens](https://anandvc.github.io/little-lens/) and create a profile using a nickname.
-2. Choose an assessment or practice activity and follow its instructions. A laptop or tablet is best for assessments; webcam activities need a camera and permission to use it.
-3. Review your results and save a backup if you want to keep a separate copy or move to another device.
+2. Follow **Start here**: a short check-in, two short activities, then next steps. A laptop or tablet is best for activities. The full library, vision checks, helper observations, and experimental webcam tasks are further down.
+3. Review next steps in Progress. If the check-in suggests an eye examination, print the appointment sheet to take along. Save a backup if you want to keep a separate copy or move to another device.
 
 Your profiles and results stay in your browser on your device. Webcam processing happens on your device too. There is no registration, advertising, or app analytics. Clearing browser data can erase your history, so use the backup option for records you want to keep.
 
@@ -46,7 +47,9 @@ The application is React / TypeScript on the Sites Vinext starter. `app/page.tsx
 
 All profile data is stored in IndexedDB (`little-lens`, store `family`). There is no personal-data API, app analytics, or remote AI processing. Exports contain unencrypted personal information; users control their storage and deletion. Import replaces local data only after validation and explicit confirmation. The app supports multiple profiles in one browser. Writes use an optimistic transaction check so a stale tab cannot overwrite newer data; a conflict asks the user to export and reload. Clearing browser storage can erase records.
 
-Version 2 exports contain profiles, symptom check-ins, original attempts, and expanded sessions. Version 1 backups and existing browser records migrate in memory without altering their original records. The IndexedDB database upgrades to version 2 without recreating its store, preventing an old version-1 app tab from overwriting new-format records. Every attempt has a task version, mode, difficulty, input method, completion state, counts, and elapsed seconds. Incomplete attempts are persisted before activities begin, so reloads cannot manufacture completed results. Assessments compare only matching profile, task, version, difficulty, and a single input method. Practice and mixed-input sessions do not enter comparisons.
+Check-ins have ten original questions (the first five match earlier check-ins, which remain valid with five answers). The IndexedDB database is version 4 so an older app tab cannot overwrite ten-answer check-ins; the backup format stays at schema 3, and older app versions reject ten-answer backups rather than silently dropping answers.
+
+Version 2 exports contain profiles, symptom check-ins, original attempts, and expanded sessions. Version 1 backups and existing browser records migrate in memory without altering their original records. The IndexedDB database upgrades to version 2 without recreating its store, preventing an old version-1 app tab from overwriting new-format records. Original-activity attempts started from now on are task version 2: assessments advance automatically with one break halfway (version 1 paused after every round), and the example round is interactive. Version 1 records stay readable, but the two versions are never compared with each other. Every attempt has a task version, mode, difficulty, input method, completion state, counts, and elapsed seconds. Incomplete attempts are persisted before activities begin, so reloads cannot manufacture completed results. Assessments compare only matching profile, task, version, difficulty, and a single input method. Practice and mixed-input sessions do not enter comparisons.
 
 ## Verification
 
