@@ -21,9 +21,14 @@ Individuals and families can use Little Lens without creating an account. Adults
 
 ## Getting started
 
-1. [Open Little Lens](https://anandvc.github.io/little-lens/) and create a profile using a nickname.
-2. Follow **Start here**: a short check-in, two short activities, then next steps. A laptop or tablet is best for activities. The full library, vision checks, helper observations, and experimental webcam tasks are further down.
-3. Review next steps in Progress. If the check-in suggests an eye examination, print the appointment sheet to take along. Save a backup if you want to keep a separate copy or move to another device.
+The home page is four steps in order. A bar at the top always shows which step you are on, how far through you are, and your score (correct answers across the games played so far).
+
+1. **Profile:** [open Little Lens](https://anandvc.github.io/little-lens/) and create a profile using a nickname.
+2. **Games:** play all 15 clicking games for visual search, memory, spatial skills, and attention. **Play all games** runs them one after another, with a "Next up" screen between games where you can take a break or skip one. Progress is saved after every game. A laptop or tablet is needed.
+3. **Webcam games:** five experimental games that estimate where you look. They need a camera and permission to use it; you can skip this step.
+4. **Check-in:** ten quick questions about eyes, reading, and close work. If an eye examination is suggested, the app explains what to ask for and offers a one-page appointment sheet.
+
+Optional vision checks (which need a ruler and a measured distance) and helper observations are below the steps. Results, practice, and the evidence summary are in the links at the top. Save a backup if you want to keep a separate copy or move to another device.
 
 Your profiles and results stay in your browser on your device. Webcam processing happens on your device too. There is no registration, advertising, or app analytics. Clearing browser data can erase your history, so use the backup option for records you want to keep.
 
