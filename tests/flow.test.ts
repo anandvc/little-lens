@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {empty,type Attempt,type Data} from '../lib/vision.ts';
 import type {SuiteRecord,SuiteKind} from '../lib/suite.ts';
 import type {ExtendedAttempt,ExtendedKind} from '../lib/extended.ts';
-import {clickingGames,webcamGames,gameKey,gameStatus,flowScore,nextGame,flowProgress} from '../lib/flow.ts';
+import {clickingGames,webcamGames,gameKey,gameStatus,flowScore,nextGame,flowProgress,webcamSkipKey,readWebcamSkips,setWebcamSkip,forgetWebcamSkips} from '../lib/flow.ts';
 const profile={id:'p',nickname:'Alex',age:9,glasses:'No' as const,diagnoses:'',observations:''};
 const base:Data={...empty,profiles:[profile]};
 const suiteRecord=(kind:SuiteKind,patch:Partial<SuiteRecord>):SuiteRecord=>({id:crypto.randomUUID(),profileId:'p',kind,version:8,date:new Date().toISOString(),status:'complete',seed:1,settings:{width:1280,height:800,pixelRatio:1,input:'mouse',eye:'Both',distanceCm:50,pixelsPerMm:0,correction:'',brightness:''},trials:[],notes:'',metrics:{},quality:'',...patch});
@@ -19,3 +19,7 @@ test('progress moves through the four steps',()=>{assert.equal(flowProgress(base
  assert.equal(flowProgress(games,'p',true).step,4);
  const webcam={...games,suite:[...games.suite,...webcamGames.map(g=>suiteRecord(g.kind as SuiteKind,{}))]};assert.equal(flowProgress(webcam,'p',false).step,4);
  const checked={...webcam,checks:[{id:'c',profileId:'p',date:new Date().toISOString(),responses:Array(10).fill('Never'),observations:''}]};assert.deepEqual(flowProgress(checked,'p',false),{step:5,done:22,total:22,games:15,webcam:5});});
+const memoryStore=()=>{const m=new Map<string,string>();return {getItem:(k:string)=>m.get(k)??null,setItem:(k:string,v:string)=>{m.set(k,String(v));},removeItem:(k:string)=>{m.delete(k);},has:(k:string)=>m.has(k)};};
+test('deleting a profile forgets only its webcam skip',()=>{const store=memoryStore();setWebcamSkip('a',true,store);setWebcamSkip('b',true,store);assert.deepEqual(readWebcamSkips(store),['a','b']);assert.deepEqual(forgetWebcamSkips(['a'],store),['b']);assert.deepEqual(readWebcamSkips(store),['b']);});
+test('deleting all local data removes the webcam skip key',()=>{const store=memoryStore();setWebcamSkip('a',true,store);assert.deepEqual(forgetWebcamSkips('all',store),[]);assert.equal(store.has(webcamSkipKey),false);assert.deepEqual(readWebcamSkips(store),[]);});
+test('webcam skips toggle per profile and ignore malformed storage',()=>{const store=memoryStore();setWebcamSkip('a',true,store);setWebcamSkip('a',true,store);assert.deepEqual(readWebcamSkips(store),['a']);setWebcamSkip('a',false,store);assert.equal(store.has(webcamSkipKey),false);store.setItem(webcamSkipKey,'{bad');assert.deepEqual(readWebcamSkips(store),[]);store.setItem(webcamSkipKey,JSON.stringify(['a',3]));assert.deepEqual(readWebcamSkips(store),['a']);assert.deepEqual(readWebcamSkips(undefined),[]);});

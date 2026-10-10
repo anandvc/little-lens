@@ -61,3 +61,23 @@ export function flowProgress(data: Data, profileId: string | undefined, webcamSk
   const step = games < clickingGames.length ? 2 : !webcamDone ? 3 : !checked ? 4 : 5;
   return { step, done: 1 + games + (webcamSkipped ? webcamGames.length : webcam) + (checked ? 1 : 0), total, games, webcam };
 }
+
+// "Skip webcam games" is a per-profile convenience kept in browser storage, outside IndexedDB and backups.
+export const webcamSkipKey = 'little-lens-webcam-skipped';
+type SkipStore = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+function browserStore(): SkipStore | undefined { try { return globalThis.localStorage; } catch { return undefined; } }
+export function readWebcamSkips(store = browserStore()): string[] {
+  try { const ids = JSON.parse(store?.getItem(webcamSkipKey) || '[]'); return Array.isArray(ids) ? ids.filter((id): id is string => typeof id === 'string') : []; } catch { return []; }
+}
+function writeWebcamSkips(ids: string[], store = browserStore()) {
+  try { if (ids.length) store?.setItem(webcamSkipKey, JSON.stringify(ids)); else store?.removeItem(webcamSkipKey); } catch { /* the skip is only a convenience */ }
+  return ids;
+}
+export function setWebcamSkip(profileId: string, skip: boolean, store = browserStore()) {
+  const rest = readWebcamSkips(store).filter(id => id !== profileId);
+  return writeWebcamSkips(skip ? [...rest, profileId] : rest, store);
+}
+/** Forget skip preferences when profiles are deleted, so a restored backup never inherits a stale skip. */
+export function forgetWebcamSkips(profileIds: string[] | 'all', store = browserStore()) {
+  return writeWebcamSkips(profileIds === 'all' ? [] : readWebcamSkips(store).filter(id => !profileIds.includes(id)), store);
+}
