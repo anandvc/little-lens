@@ -3,6 +3,8 @@ import {suiteRecordSchema} from './suite.ts';
 import { extendedAttemptSchema } from './extended.ts';
 export const kinds = ['search','memory','spatial'] as const;
 export type Kind = typeof kinds[number];
+// Version 2: assessments advance automatically with one halfway break (version 1 paused after every round), and the example round is interactive. comparable() keeps the two apart.
+export const attemptVersion=2;
 export const labels: Record<Kind,string> = {search:'Visual search',memory:'Visual memory',spatial:'Spatial matching'};
 export const symptoms = ['Tired or sore eyes during near work','Blurred vision during near work','Double vision','Losing place while reading','Difficulty with everyday visual tasks','Headaches after reading or close work','Words seem to move, jump, or float on the page','Needs to re-read lines or loses concentration while reading','Covers or closes one eye, or tilts the head, to read','Avoids reading or close work, or tires of it quickly'] as const;
 // Check-ins saved before the extra reading questions have only the first five responses.
@@ -11,7 +13,7 @@ const eyeCareSymptoms=[0,1,5,6,8], everydaySymptoms=[3,4,7,9];
 const uid=z.string().min(1).max(100), note=z.string().max(2000);
 export const profileSchema=z.object({id:uid,nickname:z.string().trim().min(1).max(40),age:z.number().int().min(0),glasses:z.enum(['Yes','No','Sometimes']),diagnoses:note,observations:note});
 export const checkSchema=z.object({id:uid,profileId:uid,date:z.string().datetime(),responses:z.array(z.enum(['Never','Sometimes','Often','Not sure'])).refine(r=>r.length===legacySymptomCount||r.length===symptoms.length,'Unexpected number of check-in responses'),observations:note});
-export const attemptSchema=z.object({id:uid,profileId:uid,date:z.string().datetime(),kind:z.enum(kinds),mode:z.enum(['assessment','practice']),version:z.literal(1),difficulty:z.number().int().min(1).max(3),input:z.enum(['keyboard','touch','mouse','mixed','unknown']),status:z.enum(['incomplete','complete']),correct:z.number().int().min(0).max(6),answered:z.number().int().min(0).max(6),total:z.literal(6),seconds:z.number().finite().min(0).max(86400)}).refine(a=>a.correct<=a.answered && (a.status!=='complete'||a.answered===6),'Invalid result counts');
+export const attemptSchema=z.object({id:uid,profileId:uid,date:z.string().datetime(),kind:z.enum(kinds),mode:z.enum(['assessment','practice']),version:z.union([z.literal(1),z.literal(attemptVersion)]),difficulty:z.number().int().min(1).max(3),input:z.enum(['keyboard','touch','mouse','mixed','unknown']),status:z.enum(['incomplete','complete']),correct:z.number().int().min(0).max(6),answered:z.number().int().min(0).max(6),total:z.literal(6),seconds:z.number().finite().min(0).max(86400)}).refine(a=>a.correct<=a.answered && (a.status!=='complete'||a.answered===6),'Invalid result counts');
 const shared={profiles:z.array(profileSchema).max(100),checks:z.array(checkSchema).max(10000),attempts:z.array(attemptSchema).max(10000)};
 const oldShared={...shared,extended:z.array(extendedAttemptSchema).max(10000)};
 const legacyBackup=z.object({schemaVersion:z.literal(1),...shared}).strict().transform(d=>({...d,schemaVersion:3 as const,extended:[] as z.infer<typeof extendedAttemptSchema>[],suite:[] as z.infer<typeof suiteRecordSchema>[]}));
